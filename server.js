@@ -10,18 +10,26 @@ app.use(cors());
 const proxyUrl = 'socks5://14a5fbc0cc539:19a07222b3@23.26.255.31:12324'; 
 const proxyAgent = new SocksProxyAgent(proxyUrl);
 
-// আপনার দেওয়া কুকিগুলো একসাথে সাজানো হলো
+// আপনার দেওয়া কুকি
 const premiumCookies = "intercom-device-id-gcaopn51=d90c72b3-f368-46c5-90c1-7bf408d6769b; intercom-session-gcaopn51=TFRsNFBrWnJDbmhUY1VpOU4zMWwydGFsTXBack9tcG91WjRxRzR5V0grUDMvZVR0RDZxd3VkTjJLbXdmeFh3TDZGT2RNaDVodlUxanNrMlM5SkRIQnd3bG1HdXNFb2QxWDRSMk1aei9BQUZTNmFUUkFyWU4rKzVVbWp5SDdncDVSSkVUL2psZEVQL3hnaEcySFd3L3NhTmxxczIyK0x2MVFNelovaEhQdEd4bE5sdWtydm9hNWJhNU5yOWJIUkF2ais0OWVNWEtJUmROTFlZWm84ZTQ1dz09LS1LdlkwYWt6dDVhVFRueW1YbnZRRzFBPT0=--4777605d35f0307e3e91b377dbcc119ba2e5683c; PHPSESSID=nleame2qv88fq0tcugr6s7g680; rememberme=cc845e949e5361aa4b3d703270dfb35f39cc697a7dcee1db";
+
+// 🕵️ ডিটেকটিভ কোড: যেকোনো ডেটা সাবমিট হলেই সে লগে প্রিন্ট করবে
+app.use((req, res, next) => {
+    if (req.method === 'POST') {
+        console.log('🔥 NEW POST REQUEST DETECTED: ', req.url);
+    }
+    next();
+});
 
 // মূল প্রক্সি কানেকশন
 app.use('/', createProxyMiddleware({
     target: 'https://academi.cx',
     changeOrigin: true,
-    secure: false, // SSL/TLS এরর এড়ানোর জন্য
+    secure: false, 
     agent: proxyAgent,
     headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Cookie': premiumCookies // ম্যাজিক চাবি এখানে বসিয়ে দেওয়া হলো!
+        'Cookie': premiumCookies
     },
     onError: (err, req, res) => {
         console.error('Proxy Error:', err.message);
