@@ -6,15 +6,15 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-// ১. আপনার কেনা Proxy IP এর তথ্য (পরে এখানে আসল আইপি বসাতে হবে)
-const proxyUrl = 'http://username:password@your_proxy_ip:port'; 
+// আপাতত একটি ডেমো আইপি দিচ্ছি যাতে সার্ভার রান হয় কোনো এরর ছাড়া।
+const proxyUrl = 'http://127.0.0.1:8080'; 
 const proxyAgent = new HttpsProxyAgent(proxyUrl);
 
-// ২. মূল প্রক্সি সেটআপ (academi.cx এর সাথে কানেকশন)
+// মূল প্রক্সি সেটআপ (academi.cx এর সাথে কানেকশন)
 app.use('/', createProxyMiddleware({
     target: 'https://academi.cx',
     changeOrigin: true,
-    agent: proxyAgent, // এই লাইনটি আপনার আইপি লুকিয়ে ফেলবে
+    agent: proxyAgent, 
     onProxyReq: (proxyReq, req, res) => {
         // এখানে আপনার প্রিমিয়াম অ্যাকাউন্টের কুকি বসবে (পরে অ্যাড করবো)
         proxyReq.setHeader('Cookie', 'YOUR_PREMIUM_COOKIE_HERE');
