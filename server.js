@@ -6,18 +6,17 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-// আপাতত একটি ডেমো আইপি দিচ্ছি যাতে সার্ভার রান হয় কোনো এরর ছাড়া।
-const proxyUrl = 'http://127.0.0.1:8080'; 
+// আপনার আসল পেইড প্রক্সি সেটআপ
+const proxyUrl = 'http://14a5fbc0cc539:19a07222b3@23.26.255.31:12324'; 
 const proxyAgent = new HttpsProxyAgent(proxyUrl);
 
-// মূল প্রক্সি সেটআপ (academi.cx এর সাথে কানেকশন)
+// মূল প্রক্সি কানেকশন
 app.use('/', createProxyMiddleware({
     target: 'https://academi.cx',
     changeOrigin: true,
-    agent: proxyAgent, 
+    agent: proxyAgent, // এই লাইনটি আপনার আসল প্রক্সি আইপি দিয়ে কানেক্ট করবে
     onProxyReq: (proxyReq, req, res) => {
-        // এখানে আপনার প্রিমিয়াম অ্যাকাউন্টের কুকি বসবে (পরে অ্যাড করবো)
-        proxyReq.setHeader('Cookie', 'YOUR_PREMIUM_COOKIE_HERE');
+        // এখানে পরে আপনার প্রিমিয়াম অ্যাকাউন্টের কুকি বসবে
     }
 }));
 
