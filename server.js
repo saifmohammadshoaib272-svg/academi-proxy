@@ -14,9 +14,16 @@ const proxyAgent = new HttpsProxyAgent(proxyUrl);
 app.use('/', createProxyMiddleware({
     target: 'https://academi.cx',
     changeOrigin: true,
-    agent: proxyAgent, // এই লাইনটি আপনার আসল প্রক্সি আইপি দিয়ে কানেক্ট করবে
+    secure: false, // SSL/TLS এরর এড়ানোর জন্য
+    agent: proxyAgent,
     onProxyReq: (proxyReq, req, res) => {
-        // এখানে পরে আপনার প্রিমিয়াম অ্যাকাউন্টের কুকি বসবে
+        // ব্রাউজার সেজে সাইটে ঢোকার জন্য User-Agent
+        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    },
+    onError: (err, req, res) => {
+        // এরর হলে যেন বিস্তারিত মেসেজ দেখায়
+        console.error('Proxy Error:', err.message);
+        res.status(500).send('প্রক্সিতে সমস্যা হচ্ছে: ' + err.message);
     }
 }));
 
